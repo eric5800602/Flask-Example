@@ -3,25 +3,32 @@ from flask import request
 from pymongo import MongoClient
 
 
-client = MongoClient('mongodb.railway.internal', 27017)
+client = MongoClient(MONGO_PRIVATE_URL)
 
 db = client.test
 todos = db.request
 
-@app.route('/send')
+@app.route('/send',methods=['POST'])
 def send():
     try:
         req = request.get_json()
         user = req['user']
-        request_name = req['request_name']
-        post_id = todos.insert_one({user:request_name}).inserted_id
-        return "Got request " + post_id
+        group_name = req['group_name']
+        todos.insert_one({"user":user, "group_name":group_name})
+        return "Got request "
     except:
-        return "Request fail"
+        return "Request fail", 400
 
 
 @app.route('/query')
 def query():
     args = todos.find_one()
-    todos.DeleteOne(args)
-    return args
+    try:
+        if args:
+            todos.delete_one({'_id': args['_id']})
+            print(args)
+            response = {"user":args["user"], "group_name":args["group_name"]}
+            return response
+        return "None request"
+    except:
+        return "Request fail",400
