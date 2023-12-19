@@ -3,7 +3,7 @@ from flask import request
 from pymongo import MongoClient
 
 
-client = MongoClient(MONGO_PRIVATE_URL)
+client = MongoClient('mongodb://mongo:1fDDeD6E35H4FbhHaDeEfCFaBFF6b15d@mongodb.railway.internal:27017')
 
 db = client.test
 todos = db.request
