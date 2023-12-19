@@ -1,5 +1,5 @@
 from app import app
-from flask import request
+from flask import request,jsonify
 from pymongo import MongoClient
 
 
@@ -28,7 +28,7 @@ def query():
             todos.delete_one({'_id': args['_id']})
             print(args)
             response = {"user":args["user"], "group_name":args["group_name"]}
-            return response
-        return "None request"
+            return jsonify(response)
+        return "None request",204
     except:
         return "Request fail",400
